@@ -744,3 +744,33 @@ var main = (function($) { var _ = {
 	},
 
 }; return _; })(jQuery); main.init();
+(function() {
+  function initMouseZoom() {
+    const viewer = document.querySelector('#viewer');
+    if (!viewer) return;
+
+    viewer.addEventListener('mousemove', function(e) {
+      const img = e.target.closest('.slide .image');
+      if (img) {
+        const rect = img.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        img.style.transformOrigin = `${x}% ${y}%`;
+      }
+    });
+
+    viewer.addEventListener('mouseleave', function(e) {
+      const img = e.target.closest('.slide .image');
+      if (img) {
+        img.style.transformOrigin = 'center center';
+      }
+    });
+  }
+
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMouseZoom);
+  } else {
+    initMouseZoom(); // DOM already loaded
+  }
+})();
