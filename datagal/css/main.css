@@ -1225,13 +1225,26 @@ input, select, textarea {
     background-position: center;
     opacity: 0;
     cursor: zoom-in;
-    transform-origin: center center; /* Default origin */
+    
 }
-
+/* Desktop hover zoom */
 #viewer .slide .image:hover {
-    transform: scale(2); /* Zoom level */
+    -moz-transform: scale(2);
+    -webkit-transform: scale(2);
+    -ms-transform: scale(2);
+    transform: scale(2);
     cursor: zoom-out;
 }
+
+/* Mobile touch zoom - toggle class */
+#viewer .slide .image.zoomed {
+    -moz-transform: scale(2);
+    -webkit-transform: scale(2);
+    -ms-transform: scale(2);
+    transform: scale(2);
+    cursor: zoom-out;
+}
+
 			#viewer .slide:before {
 				-moz-animation: spinner 1s linear infinite;
 				-webkit-animation: spinner 1s linear infinite;

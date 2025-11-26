@@ -744,33 +744,49 @@ var main = (function($) { var _ = {
 	},
 
 }; return _; })(jQuery); main.init();
+/* Mouse/Touch zoom for viewer - Universal */
 (function() {
-  function initMouseZoom() {
+  function initZoom() {
     const viewer = document.querySelector('#viewer');
     if (!viewer) return;
 
-    viewer.addEventListener('mousemove', function(e) {
-      const img = e.target.closest('.slide .image');
-      if (img) {
-        const rect = img.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        img.style.transformOrigin = `${x}% ${y}%`;
-      }
-    });
+    // Detect touch devices
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
+    if (isTouch) {
+      // Mobile: Tap to toggle zoom on/off
+      viewer.addEventListener('touchstart', function(e) {
+        const img = e.target.closest('.slide .image');
+        if (img) {
+          e.preventDefault(); // Prevent default touch behavior
+          img.classList.toggle('zoomed'); // Toggle zoom
+        }
+      });
+    } else {
+      // Desktop: Mouse follow zoom with hover
+      viewer.addEventListener('mousemove', function(e) {
+        const img = e.target.closest('.slide .image');
+        if (img) {
+          const rect = img.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          img.style.transformOrigin = `${x}% ${y}%`;
+        }
+      });
 
-    viewer.addEventListener('mouseleave', function(e) {
-      const img = e.target.closest('.slide .image');
-      if (img) {
-        img.style.transformOrigin = 'center center';
-      }
-    });
+      viewer.addEventListener('mouseleave', function(e) {
+        const img = e.target.closest('.slide .image');
+        if (img) {
+          img.style.transformOrigin = 'center center';
+        }
+      });
+    }
   }
 
   // Run on DOM ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMouseZoom);
+    document.addEventListener('DOMContentLoaded', initZoom);
   } else {
-    initMouseZoom(); // DOM already loaded
+    initZoom();
   }
 })();
